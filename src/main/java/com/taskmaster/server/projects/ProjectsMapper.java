@@ -1,17 +1,22 @@
 package com.taskmaster.server.projects;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
-public interface ProjectsMapper {
+@Component
+public class ProjectsMapper {
 
-    @Mapping(target = "name", source = "dto.name")
-    ProjectsModel convertDtoToEntity(ProjectsDto dto, String name);
+    private final ModelMapper modelMapper;
 
-    // If you need to map the name from another source, you can add a separate method like this:
-    // @Mapping(target = "name", source = "otherSource")
-    // ProjectsModel convertDtoToEntityWithOtherSource(ProjectsDto dto, String otherSource);
+    @Autowired
+    public ProjectsMapper(ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+    }
 
+    public ProjectsModel convertDtoToEntity(ProjectsDto dto, String name) {
+        ProjectsModel project = modelMapper.map(dto, ProjectsModel.class);
+        project.setName(name);
+        return project;
+    }
 }

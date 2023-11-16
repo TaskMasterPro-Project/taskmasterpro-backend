@@ -7,6 +7,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProjectsRepository extends JpaRepository<ProjectsModel, Long> {
-    Optional<ProjectsModel> findProjectByName(String name);
+    @Override
     Optional<ProjectsModel> findById(Long id); // Add this method for finding a project by ID
 }

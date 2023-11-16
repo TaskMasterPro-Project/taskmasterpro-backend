@@ -9,27 +9,24 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/project")
+@RequestMapping("/projects")
 @RequiredArgsConstructor
 public class ProjectsController {
-    private final IProjectsService projectsService;
+    private final ProjectsService projectsService;
 
-    @GetMapping("/get-all")
+    @GetMapping("/projects")
     public List<ProjectsModel> getProjects() {
         return projectsService.getAllProjects();
     }
 
-    @PostMapping("/create")
+    @PostMapping("/projects")
     public ResponseEntity<?> createProject(@RequestBody ProjectsDto dto) {
-        try {
-            ProjectsModel projectCreate = projectsService.createProject(dto);
-            return new ResponseEntity<>(projectCreate, HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+
+            return new ResponseEntity<>(projectsService.createProject(dto), HttpStatus.CREATED);
+
     }
 
-    @GetMapping("/get/{projectId}")
+    @GetMapping("/{projectId}")
     public ResponseEntity<?> getProjectById(@PathVariable Long projectId) {
         Optional<ProjectsModel> project = projectsService.findProjectById(projectId);
         return project.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
@@ -40,26 +37,19 @@ public class ProjectsController {
 
 
 
-    @PutMapping("/edit/{projectId}")
+    @PostMapping("/{projectId}/edit")
     public ResponseEntity<?> editProject(
             @PathVariable Long projectId,
-            @RequestBody ProjectsDto updatedDto
-    ) {
-        try {
+            @RequestBody ProjectsDto updatedDto) {
+
             projectsService.editProject(projectId, updatedDto);
             return new ResponseEntity<>("Project updated successfully", HttpStatus.OK);
-        } catch (ProjectNotFoundException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        }
+
     }
 
-    @DeleteMapping("/delete/{projectId}")
+    @DeleteMapping("/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
-        try {
             projectsService.deleteProjectById(projectId);
             return new ResponseEntity<>("Project deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 }
