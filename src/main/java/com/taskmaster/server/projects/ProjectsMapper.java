@@ -14,9 +14,5 @@ public class ProjectsMapper {
         this.modelMapper = modelMapper;
     }
 
-    public ProjectsModel convertDtoToEntity(ProjectsDto dto, String name) {
-        ProjectsModel project = modelMapper.map(dto, ProjectsModel.class);
-        project.setName(name);
-        return project;
-    }
+
 }

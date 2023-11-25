@@ -30,7 +30,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({ResourceNotFoundException.class, RoleNotFoundException.class,
-            UserAlreadyExistsException.class, NotAuthorizedException.class, UserBannedException.class})
+            UserAlreadyExistsException.class, NotAuthorizedException.class, UserBannedException.class,
+            ProjectAlreadyExistsException.class, ProjectNotFoundException.class})
     public ResponseEntity<Object> handleCustomExceptions(ApiException ex) {
         return ResponseEntity.status(ex.getStatus())
                 .body(

@@ -13,6 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProjectsController {
     private final ProjectsService projectsService;
+    private final ProjectsRepository projectsRepository;
 
     @GetMapping("/projects")
     public List<ProjectsModel> getProjects() {
@@ -28,7 +29,7 @@ public class ProjectsController {
 
     @GetMapping("/{projectId}")
     public ResponseEntity<?> getProjectById(@PathVariable Long projectId) {
-        Optional<ProjectsModel> project = projectsService.findProjectById(projectId);
+        Optional<ProjectsModel> project = projectsRepository.findById(projectId);
         return project.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
               //.orElseGet(() -> new ResponseEntity<>("Project not found", HttpStatus.NOT_FOUND));
