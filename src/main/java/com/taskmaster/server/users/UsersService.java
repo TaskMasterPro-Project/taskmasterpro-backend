@@ -1,6 +1,9 @@
 package com.taskmaster.server.users;
 
-import com.taskmaster.server.projects.ProjectsModel;
+import com.taskmaster.server.exception.ProjectAlreadyExistsException;
+import com.taskmaster.server.exception.ProjectNotFoundException;
+import com.taskmaster.server.exception.UserAlreadyExistsException;
+import com.taskmaster.server.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -31,7 +34,7 @@ public class UsersService {
     public UsersModel createUser(UsersDto dto) {
         // Check if a project with the given ID already exists
         if (dto.username() != null && usersRepository.findByUserName(dto.username()).isPresent()) {
-            throw new ProjectAlreadyExistsException(HttpStatus.BAD_REQUEST,"A user with name '" + dto.username() + "' already exists");
+            throw new UserAlreadyExistsException(HttpStatus.BAD_REQUEST,"A user with name '" + dto.username() + "' already exists");
         }
 
         // If a project with the given ID doesn't exist, proceed with creating the project
@@ -43,7 +46,7 @@ public class UsersService {
         Optional<UsersModel> optionalUser = usersRepository.findById(userId);
 
         if (!optionalUser.isPresent()) {
-            throw new ProjectNotFoundException(HttpStatus.NOT_FOUND,"User not found with ID: " + userId);
+            throw new UserNotFoundException(HttpStatus.NOT_FOUND,"User not found with ID: " + userId);
         }
 
         // Update the fields of the existing project with the values from the updatedDto

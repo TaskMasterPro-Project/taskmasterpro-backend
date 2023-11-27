@@ -1,6 +1,8 @@
 package com.taskmaster.server.users;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+
 import com.taskmaster.server.model.entity.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +18,7 @@ public class UsersModel extends BaseEntity
     @Column( name = "username")
     private String username;
 
+    @NotNull
     @Column(name="password")
     private String password;
 
