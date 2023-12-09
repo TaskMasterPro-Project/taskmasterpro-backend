@@ -1,6 +1,6 @@
-package com.taskmaster.server.auth.entity;
+package com.taskmaster.server.auth.model;
 
-import com.taskmaster.server.model.entity.BaseEntity;
+import com.taskmaster.server.model.BaseEntity;
 import com.taskmaster.server.utils.validators.EmailValidator;
 import com.taskmaster.server.utils.validators.UserUsernameValidator;
 import lombok.*;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Table(name="users")
-public class UserEntity extends BaseEntity {
+public class UserModel extends BaseEntity {
     @UserUsernameValidator
     private String username;
     @NotNull
@@ -39,7 +39,7 @@ public class UserEntity extends BaseEntity {
     @JoinTable(name="users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<RoleEntity> roles;
+    private Set<RoleModel> roles;
 
 
 }

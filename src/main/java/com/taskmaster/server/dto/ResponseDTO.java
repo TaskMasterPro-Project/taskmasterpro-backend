@@ -17,4 +17,17 @@ public class ResponseDTO {
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 
+    public ResponseDTO(final String message, final Object content)
+    {
+        this.message = message;
+        this.content = content;
+        this. timestamp = LocalDateTime.now();
+    }
+
+    public ResponseDTO(final String message)
+    {
+        this.message = message;
+        this.content = null;
+        this. timestamp = LocalDateTime.now();
+    }
 }

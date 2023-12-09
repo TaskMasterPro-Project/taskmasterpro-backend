@@ -1,5 +1,5 @@
 # Use root/example as user/password credentials
-version: '3.1'
+version: '3.8'
 
 services:
   db:
@@ -9,3 +9,18 @@ services:
       - "3306:3306"
     environment:
       MARIADB_ROOT_PASSWORD: root
+    profiles:
+      - default
+
+  app:
+    build:
+      context: docker
+    restart: always
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    depends_on:
+      - db
+    profiles:
+      - app
+
+

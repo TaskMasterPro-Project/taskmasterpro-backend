@@ -18,6 +18,7 @@ public class SignupDTO {
     private String email;
     @NotBlank
     private String password;
+    @NotBlank
     private String firstName;
     private String lastName;
     private LocalDate birthday;

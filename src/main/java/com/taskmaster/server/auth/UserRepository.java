@@ -1,14 +1,14 @@
 package com.taskmaster.server.auth;
 
-import com.taskmaster.server.auth.entity.UserEntity;
+import com.taskmaster.server.auth.model.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByUsernameOrEmail(String username, String email);
+public interface UserRepository extends JpaRepository<UserModel, Long> {
+    Optional<UserModel> findByUsernameOrEmail(String username, String email);
 
     boolean existsByUsername(String usernameOrEmail);
     boolean existsByEmail(String usernameOrEmail);
