@@ -1,6 +1,6 @@
 app:
   jwt-secret: ${JWT_SECRET}
-  jwt-expiration-ms: 36000
+  jwt-expiration-ms: 36000000
 server:
   port: 8080
 #logging:
@@ -9,6 +9,9 @@ server:
 spring:
   application:
     name: task-master
+  devtools:
+    restart:
+      enabled: false
   data:
     web:
       pageable:

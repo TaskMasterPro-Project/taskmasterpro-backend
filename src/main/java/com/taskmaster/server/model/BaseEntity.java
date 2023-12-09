@@ -1,4 +1,4 @@
-package com.taskmaster.server.model.entity;
+package com.taskmaster.server.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

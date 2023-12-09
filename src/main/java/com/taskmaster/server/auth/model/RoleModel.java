@@ -1,6 +1,6 @@
-package com.taskmaster.server.auth.entity;
+package com.taskmaster.server.auth.model;
 
-import com.taskmaster.server.model.entity.BaseEntity;
+import com.taskmaster.server.model.BaseEntity;
 import com.taskmaster.server.auth.RoleEnum;
 import lombok.*;
 
@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Entity
 @Table(name = "roles")
-public class RoleEntity extends BaseEntity {
+public class RoleModel extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private RoleEnum roleName;
 }

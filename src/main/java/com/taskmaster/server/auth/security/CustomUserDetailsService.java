@@ -1,6 +1,6 @@
 package com.taskmaster.server.auth.security;
 
-import com.taskmaster.server.auth.entity.UserEntity;
+import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,9 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserPrincipal loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(
+        UserModel user = userRepository.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail).orElseThrow(
                 () -> new UsernameNotFoundException("User not found!")
-        );
+                                                                                                           );
 
         Set<GrantedAuthority> authorities = user.getRoles()
                 .stream()

@@ -49,11 +49,7 @@ public class SecurityConfiguration {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/subreddits/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/get-feed").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/projects/**").permitAll()
                 .anyRequest().authenticated();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

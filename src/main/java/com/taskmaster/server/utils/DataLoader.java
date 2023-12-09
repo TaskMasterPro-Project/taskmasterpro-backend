@@ -2,8 +2,8 @@ package com.taskmaster.server.utils;
 
 import com.taskmaster.server.auth.RoleRepository;
 import com.taskmaster.server.auth.UserRepository;
-import com.taskmaster.server.auth.entity.RoleEntity;
-import com.taskmaster.server.auth.entity.UserEntity;
+import com.taskmaster.server.auth.model.RoleModel;
+import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.RoleEnum;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -28,11 +28,11 @@ public class DataLoader implements ApplicationRunner {
     public void run(ApplicationArguments args) {
         if (roleRepository.count() == 0) {
             //set user roles
-            RoleEntity adminRole = roleRepository.save(RoleEntity.builder().roleName(RoleEnum.ADMIN).build());
-            RoleEntity userRole = roleRepository.save(RoleEntity.builder().roleName(RoleEnum.USER).build());
+            RoleModel adminRole = roleRepository.save(RoleModel.builder().roleName(RoleEnum.ADMIN).build());
+            RoleModel userRole = roleRepository.save(RoleModel.builder().roleName(RoleEnum.USER).build());
 
-            UserEntity deletedUser = userRepository.save(
-                    UserEntity
+            UserModel deletedUser = userRepository.save(
+                    UserModel
                             .builder()
                             .username("deleted")
                             .password("$2a$12$w.GNfFrtuRMFSxWq0TZsgO2M/O3jTwZ8cvdL3X/EW0XQKNitCqD6K")
@@ -42,10 +42,10 @@ public class DataLoader implements ApplicationRunner {
                             .lastName(null)
                             .email("deleted@deleted.com")
                             .build()
-            );
+                                                       );
 
-            UserEntity user = userRepository.save(
-                    UserEntity
+            UserModel user = userRepository.save(
+                    UserModel
                             .builder()
                             .username("test1")
                             .password("$2a$12$w.GNfFrtuRMFSxWq0TZsgO2M/O3jTwZ8cvdL3X/EW0XQKNitCqD6K")
@@ -55,10 +55,10 @@ public class DataLoader implements ApplicationRunner {
                             .lastName("Test")
                             .email("test@test.com")
                             .build()
-            );
+                                                );
 
             userRepository.save(
-                    UserEntity
+                    UserModel
                             .builder()
                             .username("admin")
                             .password("$2a$12$w.GNfFrtuRMFSxWq0TZsgO2M/O3jTwZ8cvdL3X/EW0XQKNitCqD6K")

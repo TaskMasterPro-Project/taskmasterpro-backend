@@ -4,8 +4,8 @@ import com.taskmaster.server.auth.dto.SigninDTO;
 import com.taskmaster.server.auth.dto.SignupDTO;
 import com.taskmaster.server.exception.RoleNotFoundException;
 import com.taskmaster.server.exception.UserAlreadyExistsException;
-import com.taskmaster.server.auth.entity.RoleEntity;
-import com.taskmaster.server.auth.entity.UserEntity;
+import com.taskmaster.server.auth.model.RoleModel;
+import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.security.JwtTokenProvider;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -61,11 +61,11 @@ public class AuthService {
             throw new UserAlreadyExistsException(HttpStatus.BAD_REQUEST, "User with such email already exists!");
         }
 
-        RoleEntity role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(()
+        RoleModel role = roleRepository.findByRoleName(RoleEnum.USER).orElseThrow(()
                 -> new RoleNotFoundException(HttpStatus.INTERNAL_SERVER_ERROR, "No Default User Role in the database"));
 
         //create new user
-        UserEntity user = modelMapper.map(signupDto, UserEntity.class);
+        UserModel user = modelMapper.map(signupDto, UserModel.class);
         user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
         user.setRoles(Set.of(role));
         user.setEnabled(true);

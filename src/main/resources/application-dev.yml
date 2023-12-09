@@ -1,6 +1,6 @@
 app:
   jwt-secret: b410620b7239f7d924d3915ed10cb3e5e9b932d62280815bdf6dae449804ba908fb4ca4588ab1e9d22373a0a191fbc15a6e8a243e9b2eeea32337e6de7b68cd3
-  jwt-expiration-ms: 36000
+  jwt-expiration-ms: 36000000
   data-loader: true
 spring:
   datasource:
