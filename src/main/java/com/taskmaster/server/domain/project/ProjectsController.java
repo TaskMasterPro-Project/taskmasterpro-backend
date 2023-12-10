@@ -55,7 +55,7 @@ public class ProjectsController {
             CreateEditProjectRequest updatedDto)
     {
         projectsService.editProject(projectId, updatedDto);
-        return new ResponseEntity<>(new ResponseDTO("Project update successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO("Project updated successfully!"), HttpStatus.OK);
     }
 
     @DeleteMapping("/{projectId}")
@@ -63,6 +63,6 @@ public class ProjectsController {
     public ResponseEntity<ResponseDTO> deleteProject(@PathVariable Long projectId)
     {
         projectsService.deleteProjectById(projectId);
-        return new ResponseEntity<>(new ResponseDTO("Project update successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO("Project deleted successfully!"), HttpStatus.OK);
     }
 }
