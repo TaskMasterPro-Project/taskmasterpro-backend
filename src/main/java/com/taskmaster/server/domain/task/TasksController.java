@@ -35,10 +35,10 @@ public class TasksController {
         return new ResponseEntity<>(new ResponseDTO("Task created successfully"), HttpStatus.CREATED);
     }
 
-    @GetMapping("/{taskId}")
-    public ResponseEntity<ResponseDTO> getTaskById(@PathVariable Long taskId)
+    @GetMapping("/projects/{projectId}/tasks")
+    public List<TaskDTO> getTaskByProjectId(@PathVariable Long projectId)
     {
-        return new ResponseEntity<>(new ResponseDTO(null, tasksService.getTask(taskId)), HttpStatus.OK);
+        return tasksService.getTasksForProject(projectId);
     }
 
 

@@ -9,6 +9,7 @@ import com.taskmaster.server.model.BaseEntity;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Builder
@@ -27,23 +28,20 @@ public class TaskModel extends BaseEntity{
     @JoinColumn(name = "project_id")
     private ProjectModel project;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserModel user;
-
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CommentModel> comments;
 
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(name="assignee")
-    private UserModel assignees;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<UserModel> assignees;
 
     @Column(name="due_date")
     private LocalDate dueDate;
 
-    @Column(name="task_owner")
+    @JoinColumn(name="task_owner_id")
+    @ManyToOne(fetch = FetchType.EAGER)
     private UserModel taskOwner;
 
 }

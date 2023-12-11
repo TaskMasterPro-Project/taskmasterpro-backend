@@ -3,14 +3,13 @@ package com.taskmaster.server.domain.task;
 import com.taskmaster.server.auth.UserRepository;
 import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.security.UserPrincipal;
-import com.taskmaster.server.domain.comment.dto.CommentDTO;
 import com.taskmaster.server.domain.task.dto.CreateEditTaskRequest;
 import com.taskmaster.server.domain.task.dto.TaskDTO;
 import com.taskmaster.server.domain.task.model.TaskModel;
+import com.taskmaster.server.dto.UserDTO;
 import com.taskmaster.server.exception.NotAuthorizedException;
 import com.taskmaster.server.exception.TaskAlreadyExistsException;
 import com.taskmaster.server.exception.TaskNotFoundException;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -21,26 +20,14 @@ import java.util.List;
 public class TasksService {
 
     private final TasksRepository tasksRepository;
-    private final ModelMapper modelMapper;
     private final UserRepository userRepository;
 
     public TasksService(TasksRepository tasksRepository,
-                           ModelMapper modelMapper,
                            UserRepository userRepository)
     {
         this.tasksRepository = tasksRepository;
-        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
     }
-
-
-    public TaskDTO getTask(long taskId)
-    {
-        var model = tasksRepository.findById(taskId).stream().findFirst()
-                .orElseThrow(TaskNotFoundException::new);
-        return modelMapper.map(model, TaskDTO.class);
-    }
-
 
     @Transactional
     public void createTask(CreateEditTaskRequest dto, UserPrincipal userPrincipal)
@@ -48,7 +35,8 @@ public class TasksService {
         UserModel loggedUser = userRepository
                 .findByUsernameOrEmail(userPrincipal.getUsername(), userPrincipal.getUsername())
                 .orElseThrow(NotAuthorizedException::new);
-        if (dto.title() != null && tasksRepository.existsByName(dto.title()))
+        List<UserModel> assignees = userRepository.findAllByUsernameIn(dto.assignees());
+        if (dto.title() != null && tasksRepository.existsByTitle(dto.title()))
         {
             throw new TaskAlreadyExistsException(HttpStatus.BAD_REQUEST,
                     "Task with title '" + dto.title() + "' already exists");
@@ -57,24 +45,24 @@ public class TasksService {
         var model = TaskModel.builder()
                 .title(dto.title())
                 .description(dto.description())
-                .assigniee(dto.assigniee())
+                             .assignees(assignees)
                 .dueDate(dto.dueDate())
-                .taskOwner(dto.taskOwner())
+                             .taskOwner(loggedUser)
                 .build();
-        var savedModel = tasksRepository.save(model);
         tasksRepository.save(model);
     }
 
     @Transactional
     public void editTask(long taskId, CreateEditTaskRequest updatedDto)
     {
+        List<UserModel> assignees = userRepository.findAllByUsernameIn(updatedDto.assignees());
         TaskModel task = tasksRepository.findById(taskId)
                 .orElseThrow(TaskNotFoundException::new);
         task.setTitle(updatedDto.title());
         task.setDescription(updatedDto.description());
-        task.setAssigniee(updatedDto.assigniee());
+        task.setAssignees(assignees);
         task.setDueDate(updatedDto.dueDate());
-        task.setTaskOwner(updatedDto.taskOwner());
+        tasksRepository.save(task);
     }
 
     @Transactional
@@ -82,4 +70,24 @@ public class TasksService {
     {
         tasksRepository.deleteById(taskId);
     }
+
+    public List<TaskDTO> getTasksForProject(Long projectId) {
+        List<TaskModel> taskModels = tasksRepository.findAllByProjectId(projectId);
+        return taskModels.stream().map(taskModel -> {
+            List<UserDTO> assigneeDTOs = taskModel.getAssignees().stream()
+                                                  .map(userModel -> new UserDTO(userModel.getFirstName(), userModel.getLastName(), userModel.getUsername(), userModel.getEmail()))
+                                                  .toList();
+
+            UserDTO taskOwnerDTO = null;
+            if (taskModel.getTaskOwner() != null) {
+                UserModel taskOwner = taskModel.getTaskOwner();
+                taskOwnerDTO = new UserDTO(taskOwner.getFirstName(), taskOwner.getLastName(), taskOwner.getUsername(), taskOwner.getEmail());
+            }
+
+            return new TaskDTO(taskModel.getId(), taskModel.getTitle(), taskModel.getDescription(), assigneeDTOs, taskModel.getDueDate(), taskOwnerDTO);
+        }).toList();
+    }
+
+
+
 }

@@ -28,7 +28,6 @@ public class ProjectMembershipService
 
     public List<ProjectMemberDTO> getProjectMembers(final long projectId)
     {
-        //TODO: custom query for joining , n+1 problem
         return projectMembershipRepository.findProjectMembers(projectId);
     }
 

@@ -1,6 +1,7 @@
 package com.taskmaster.server.domain.task.dto;
 
 import com.taskmaster.server.auth.model.UserModel;
+import com.taskmaster.server.dto.UserDTO;
 import lombok.*;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,10 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TaskDTO {
-    private int id;
+    private long id;
     private String title;
     private String description;
-    private List<String> assignees;
+    private List<UserDTO> assignees;
     private LocalDate dueDate;
-    private String taskOwner;
+    private UserDTO taskOwner;
 }

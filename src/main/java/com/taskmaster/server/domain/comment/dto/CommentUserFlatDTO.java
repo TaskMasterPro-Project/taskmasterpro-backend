@@ -1,7 +1,5 @@
 package com.taskmaster.server.domain.comment.dto;
 
-import com.taskmaster.server.auth.model.UserModel;
-import com.taskmaster.server.dto.UserDTO;
 import lombok.*;
 
 @Data
@@ -9,8 +7,12 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDTO {
+public class CommentUserFlatDTO {
     private long id;
     private String content;
-    private UserDTO commentOwner;
+    private String firstName;
+    private String lastName;
+    private String username;
+    private String email;
+
 }

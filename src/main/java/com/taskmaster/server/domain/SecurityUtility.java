@@ -40,7 +40,7 @@ public class SecurityUtility
         UserModel loggedUser = userRepository
                 .findByUsernameOrEmail(userPrincipal.getUsername(), userPrincipal.getUsername())
                 .orElseThrow(NotAuthorizedException::new);
-        return commentsRepository.existsByCommentIdAndUserId(commentId, loggedUser.getId());
+        return commentsRepository.existsByIdAndUserId(commentId, loggedUser.getId());
     }
 
     public boolean isTaskOwner(final Long taskId, UserPrincipal userPrincipal)
@@ -48,6 +48,6 @@ public class SecurityUtility
         UserModel loggedUser = userRepository
                 .findByUsernameOrEmail(userPrincipal.getUsername(), userPrincipal.getUsername())
                 .orElseThrow(NotAuthorizedException::new);
-        return tasksRepository.existsByTaskIdAndUserId(taskId, loggedUser.getId());
+        return tasksRepository.existsByIdAndTaskOwnerId(taskId, loggedUser.getId());
     }
 }
