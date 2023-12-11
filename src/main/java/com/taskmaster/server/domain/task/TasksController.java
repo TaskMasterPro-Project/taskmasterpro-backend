@@ -19,25 +19,24 @@ import static com.taskmaster.server.config.AppConstants.API_BASE;
 public class TasksController {
     private final TasksService tasksService;
 
-    public TasksController(TasksService tasksService)
-    {
+    public TasksController(TasksService tasksService) {
 
         this.tasksService = tasksService;
     }
 
-    @PostMapping
+    @PostMapping("/projects/{projectId}/tasks")
     public ResponseEntity<ResponseDTO> createTask(
             @RequestBody
             CreateEditTaskRequest dto,
-            @AuthenticationPrincipal UserPrincipal principal)
-    {
-        tasksService.createTask(dto, principal);
+            @AuthenticationPrincipal UserPrincipal principal,
+            @PathVariable
+            Long projectId) {
+        tasksService.createTask(dto, principal, projectId);
         return new ResponseEntity<>(new ResponseDTO("Task created successfully"), HttpStatus.CREATED);
     }
 
     @GetMapping("/projects/{projectId}/tasks")
-    public List<TaskDTO> getTaskByProjectId(@PathVariable Long projectId)
-    {
+    public List<TaskDTO> getTaskByProjectId(@PathVariable Long projectId) {
         return tasksService.getTasksForProject(projectId);
     }
 
@@ -47,16 +46,14 @@ public class TasksController {
     public ResponseEntity<ResponseDTO> editTask(
             @PathVariable Long taskId,
             @RequestBody
-            CreateEditTaskRequest updatedDto)
-    {
+            CreateEditTaskRequest updatedDto) {
         tasksService.editTask(taskId, updatedDto);
         return new ResponseEntity<>(new ResponseDTO("Task updated successfully!"), HttpStatus.OK);
     }
 
     @DeleteMapping("/{taskId}")
     @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
-    public ResponseEntity<ResponseDTO> deleteTask(@PathVariable Long taskId)
-    {
+    public ResponseEntity<ResponseDTO> deleteTask(@PathVariable Long taskId) {
         tasksService.deleteTaskById(taskId);
         return new ResponseEntity<>(new ResponseDTO("Task deleted successfully!"), HttpStatus.OK);
     }

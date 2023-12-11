@@ -3,11 +3,14 @@ package com.taskmaster.server.domain.task;
 import com.taskmaster.server.auth.UserRepository;
 import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.security.UserPrincipal;
+import com.taskmaster.server.domain.category.CategoriesRepository;
+import com.taskmaster.server.domain.project.ProjectsRepository;
 import com.taskmaster.server.domain.task.dto.CreateEditTaskRequest;
 import com.taskmaster.server.domain.task.dto.TaskDTO;
 import com.taskmaster.server.domain.task.model.TaskModel;
 import com.taskmaster.server.dto.UserDTO;
 import com.taskmaster.server.exception.NotAuthorizedException;
+import com.taskmaster.server.exception.ResourceNotFoundException;
 import com.taskmaster.server.exception.TaskAlreadyExistsException;
 import com.taskmaster.server.exception.TaskNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -22,15 +25,21 @@ public class TasksService {
     private final TasksRepository tasksRepository;
     private final UserRepository userRepository;
 
+    private final CategoriesRepository categoriesRepository;
+
+    private final ProjectsRepository projectsRepository;
+
     public TasksService(TasksRepository tasksRepository,
-                           UserRepository userRepository)
+                           UserRepository userRepository, CategoriesRepository categoriesRepository,ProjectsRepository projectsRepository)
     {
         this.tasksRepository = tasksRepository;
         this.userRepository = userRepository;
+        this.categoriesRepository=categoriesRepository;
+        this.projectsRepository=projectsRepository;
     }
 
     @Transactional
-    public void createTask(CreateEditTaskRequest dto, UserPrincipal userPrincipal)
+    public void createTask(CreateEditTaskRequest dto, UserPrincipal userPrincipal, Long projectId)
     {
         UserModel loggedUser = userRepository
                 .findByUsernameOrEmail(userPrincipal.getUsername(), userPrincipal.getUsername())
@@ -41,6 +50,8 @@ public class TasksService {
             throw new TaskAlreadyExistsException(HttpStatus.BAD_REQUEST,
                     "Task with title '" + dto.title() + "' already exists");
         }
+        var project=projectsRepository.findById(projectId).orElseThrow( () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Project not found"));
+        var category=categoriesRepository.findById(dto.categoryId()).orElseThrow( () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Category not found"));
 
         var model = TaskModel.builder()
                 .title(dto.title())
@@ -48,6 +59,8 @@ public class TasksService {
                              .assignees(assignees)
                 .dueDate(dto.dueDate())
                              .taskOwner(loggedUser)
+                .project(project)
+                .category(category)
                 .build();
         tasksRepository.save(model);
     }
@@ -56,11 +69,13 @@ public class TasksService {
     public void editTask(long taskId, CreateEditTaskRequest updatedDto)
     {
         List<UserModel> assignees = userRepository.findAllByUsernameIn(updatedDto.assignees());
+        var category=categoriesRepository.findById(updatedDto.categoryId()).orElseThrow( () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Category not found"));
         TaskModel task = tasksRepository.findById(taskId)
                 .orElseThrow(TaskNotFoundException::new);
         task.setTitle(updatedDto.title());
         task.setDescription(updatedDto.description());
         task.setAssignees(assignees);
+        task.setCategory(category);
         task.setDueDate(updatedDto.dueDate());
         tasksRepository.save(task);
     }
