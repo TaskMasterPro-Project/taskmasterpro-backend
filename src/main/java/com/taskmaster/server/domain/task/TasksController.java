@@ -43,7 +43,7 @@ public class TasksController {
 
 
     @PutMapping("/{taskId}")
-    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal)")
+    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
     public ResponseEntity<ResponseDTO> editTask(
             @PathVariable Long taskId,
             @RequestBody
@@ -54,7 +54,7 @@ public class TasksController {
     }
 
     @DeleteMapping("/{taskId}")
-    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal)")
+    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
     public ResponseEntity<ResponseDTO> deleteTask(@PathVariable Long taskId)
     {
         tasksService.deleteTaskById(taskId);

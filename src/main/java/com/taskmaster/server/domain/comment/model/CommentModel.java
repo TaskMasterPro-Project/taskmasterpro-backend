@@ -26,4 +26,7 @@ public class CommentModel extends BaseEntity{
     @JoinColumn(name = "task_id")
     private TaskModel task;
 
+    @Column(name="commentOwner")
+    private UserModel commentOwner;
+
 }

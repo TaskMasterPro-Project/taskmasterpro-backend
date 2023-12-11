@@ -57,6 +57,9 @@ public class TasksService {
         var model = TaskModel.builder()
                 .title(dto.title())
                 .description(dto.description())
+                .assigniee(dto.assigniee())
+                .dueDate(dto.dueDate())
+                .taskOwner(dto.taskOwner())
                 .build();
         var savedModel = tasksRepository.save(model);
         tasksRepository.save(model);
@@ -69,6 +72,9 @@ public class TasksService {
                 .orElseThrow(TaskNotFoundException::new);
         task.setTitle(updatedDto.title());
         task.setDescription(updatedDto.description());
+        task.setAssigniee(updatedDto.assigniee());
+        task.setDueDate(updatedDto.dueDate());
+        task.setTaskOwner(updatedDto.taskOwner());
     }
 
     @Transactional

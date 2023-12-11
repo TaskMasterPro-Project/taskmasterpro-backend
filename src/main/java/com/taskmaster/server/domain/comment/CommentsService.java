@@ -1,5 +1,6 @@
 package com.taskmaster.server.domain.comment;
 
+import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.domain.comment.dto.CommentDTO;
 import com.taskmaster.server.domain.comment.model.CommentModel;
 import com.taskmaster.server.domain.task.TasksRepository;
@@ -32,12 +33,13 @@ public class CommentsService {
     }
 
     @Transactional
-    public void addCommentToTask(final Long taskId, final String content)
+    public void addCommentToTask(final Long taskId, final String content, final UserModel commentOwner)
     {
         var task = tasksRepository.findById(taskId).orElseThrow(TaskNotFoundException::new);
         var comment = CommentModel.builder()
                 .content(content)
                 .task(task)
+                .commentOwner(commentOwner)
                 .build();
         task.getComments().add(comment);
         commentsRepository.save(comment);

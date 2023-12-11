@@ -8,6 +8,7 @@ import com.taskmaster.server.domain.project.model.ProjectModel;
 import com.taskmaster.server.model.BaseEntity;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Set;
 
 @Builder
@@ -35,5 +36,14 @@ public class TaskModel extends BaseEntity{
 
     @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(name="assignee")
+    private UserModel assignees;
+
+    @Column(name="due_date")
+    private LocalDate dueDate;
+
+    @Column(name="task_owner")
+    private UserModel taskOwner;
 
 }

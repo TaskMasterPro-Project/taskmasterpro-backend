@@ -1,5 +1,6 @@
 package com.taskmaster.server.domain.comment.dto;
 
+import com.taskmaster.server.auth.model.UserModel;
 import lombok.*;
 
 @Data
@@ -10,4 +11,5 @@ import lombok.*;
 public class CommentDTO {
     private int id;
     private String content;
+    private UserModel commentOwner;
 }
