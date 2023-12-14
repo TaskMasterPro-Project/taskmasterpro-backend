@@ -15,7 +15,7 @@ import java.util.List;
 import static com.taskmaster.server.config.AppConstants.API_BASE;
 
 @RestController
-@RequestMapping(path = API_BASE + "/v1/tasks")
+@RequestMapping(path = API_BASE + "/v1")
 public class TasksController {
     private final TasksService tasksService;
 
@@ -41,19 +41,21 @@ public class TasksController {
     }
 
 
-    @PutMapping("/{taskId}")
+    @PutMapping("/projects/{projectId}/tasks/{taskId}")
     @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
     public ResponseEntity<ResponseDTO> editTask(
+            @PathVariable Long projectId,
             @PathVariable Long taskId,
-            @RequestBody
-            CreateEditTaskRequest updatedDto) {
+            @RequestBody CreateEditTaskRequest updatedDto)
+    {
         tasksService.editTask(taskId, updatedDto);
         return new ResponseEntity<>(new ResponseDTO("Task updated successfully!"), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{taskId}")
+    @DeleteMapping("/projects/{projectId}/tasks/{taskId}")
     @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
-    public ResponseEntity<ResponseDTO> deleteTask(@PathVariable Long taskId) {
+    public ResponseEntity<ResponseDTO> deleteTask(@PathVariable Long projectId, @PathVariable Long taskId)
+    {
         tasksService.deleteTaskById(taskId);
         return new ResponseEntity<>(new ResponseDTO("Task deleted successfully!"), HttpStatus.OK);
     }

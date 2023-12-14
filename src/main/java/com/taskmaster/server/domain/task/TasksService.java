@@ -99,7 +99,10 @@ public class TasksService {
                 taskOwnerDTO = new UserDTO(taskOwner.getFirstName(), taskOwner.getLastName(), taskOwner.getUsername(), taskOwner.getEmail());
             }
 
-            return new TaskDTO(taskModel.getId(), taskModel.getTitle(), taskModel.getDescription(), assigneeDTOs, taskModel.getDueDate(), taskOwnerDTO);
+            return new TaskDTO(taskModel.getId(), taskModel.getTitle(), taskModel.getDescription(), assigneeDTOs,
+                               taskModel.getDueDate(), taskOwnerDTO, taskModel
+                                       .getCategory()
+                                       .getId());
         }).toList();
     }
 

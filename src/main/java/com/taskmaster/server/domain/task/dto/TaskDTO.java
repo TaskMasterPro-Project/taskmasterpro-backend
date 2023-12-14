@@ -20,4 +20,5 @@ public class TaskDTO {
     private List<UserDTO> assignees;
     private LocalDate dueDate;
     private UserDTO taskOwner;
+    private long categoryId;
 }
