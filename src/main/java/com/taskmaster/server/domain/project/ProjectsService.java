@@ -42,7 +42,7 @@ public class ProjectsService {
 
     public List<ProjectDTO> getAllProjects()
     {
-        //under the assumption that users can view all projects by can not create tasks if not members
+        //under the assumption that users can view all projects but cannot create tasks if not members
         return projectsRepository.findAll().stream().map(model -> modelMapper.map(model, ProjectDTO.class)).toList();
     }
 
