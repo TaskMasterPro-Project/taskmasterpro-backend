@@ -54,7 +54,7 @@ public class ProjectsService {
     }
 
     @Transactional
-    public void createProject(CreateEditProjectRequest dto, UserPrincipal userPrincipal)
+    public Long createProject(CreateEditProjectRequest dto, UserPrincipal userPrincipal)
     {
         UserModel loggedUser = userRepository
                 .findByUsernameOrEmail(userPrincipal.getUsername(), userPrincipal.getUsername())
@@ -70,8 +70,9 @@ public class ProjectsService {
                                 .description(dto.description())
                                 .build();
         var savedModel = projectsRepository.save(model);
-        projectMembershipService.addProjectMember(savedModel.getId(), loggedUser.getId(), ProjectUserRole.OWNER);
-        projectsRepository.save(model);
+        projectMembershipService.addProjectMember(savedModel.getId(), loggedUser.getEmail(), ProjectUserRole.OWNER);
+        ProjectModel projectModel = projectsRepository.save(model);
+        return projectModel.getId();
     }
 
     @Transactional

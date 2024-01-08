@@ -17,7 +17,6 @@ import java.util.Set;
 @Entity
 @Table(name="users")
 public class UserModel extends BaseEntity {
-    @UserUsernameValidator
     private String username;
     @NotNull
     private String password;

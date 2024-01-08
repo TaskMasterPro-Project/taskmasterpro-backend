@@ -13,6 +13,7 @@ public final class AppConstants {
             AppConstants.API_BASE + "/v1/auth/sign-up"
     );
     public static final List<String> CROSS_ORIGIN_DOMAINS = List.of(
+            "http://localhost:3001",
             "http://localhost:3000",
             "http://127.0.0.1:80"
     );

@@ -1,12 +1,13 @@
 package com.taskmaster.server.auth;
 
 import com.taskmaster.server.auth.dto.SigninDTO;
+import com.taskmaster.server.auth.dto.SigninResponse;
 import com.taskmaster.server.auth.dto.SignupDTO;
-import com.taskmaster.server.exception.RoleNotFoundException;
-import com.taskmaster.server.exception.UserAlreadyExistsException;
 import com.taskmaster.server.auth.model.RoleModel;
 import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.security.JwtTokenProvider;
+import com.taskmaster.server.exception.RoleNotFoundException;
+import com.taskmaster.server.exception.UserAlreadyExistsException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -40,13 +42,24 @@ public class AuthService {
         this.roleRepository = roleRepository;
     }
 
-    public String signInUser(SigninDTO signinDto) {
+    public SigninResponse signInUser(SigninDTO signinDto)
+    {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 signinDto.getUsernameOrEmail(), signinDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenProvider.generateJwtToken(authentication);
+        UserModel user = userRepository.findByUsernameOrEmail(signinDto.getUsernameOrEmail(),
+                signinDto.getUsernameOrEmail()).orElseThrow(() -> new RuntimeException("User not found!"));
 
-        return jwtTokenProvider.generateJwtToken(authentication);
+        return SigninResponse.builder()
+                             .accessToken(token)
+                             .email(user.getEmail())
+                             .username(user.getUsername())
+                             .roles(user.getRoles().stream().map(RoleModel::getRoleName).collect(Collectors.toSet()))
+                             .firstName(user.getFirstName())
+                             .lastName(user.getLastName())
+                             .build();
     }
 
     @Transactional
