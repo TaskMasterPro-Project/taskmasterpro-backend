@@ -33,7 +33,7 @@ public class CategoriesService
     }
 
     @Transactional
-    public void addCategoryToProject(final Long projectId, final String name)
+    public Long addCategoryToProject(final Long projectId, final String name)
     {
         var project = projectsRepository.findById(projectId).orElseThrow(ProjectNotFoundException::new);
         var category = CategoryModel.builder()
@@ -41,7 +41,8 @@ public class CategoriesService
                                     .project(project)
                                     .build();
         project.getCategories().add(category);
-        categoriesRepository.save(category);
+        var savedCategory = categoriesRepository.save(category);
+        return savedCategory.getId();
     }
 
     @Transactional

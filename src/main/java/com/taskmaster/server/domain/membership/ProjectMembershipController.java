@@ -42,7 +42,7 @@ public class ProjectMembershipController
     public ResponseEntity<ResponseDTO> addProjectMember(@PathVariable Long projectId,
                                            @RequestBody AddProjectMemberRequest request)
     {
-        projectMembershipService.addProjectMember(projectId, request.userId(), request.role());
+        projectMembershipService.addProjectMember(projectId, request.email(), request.role());
         return new ResponseEntity<>(new ResponseDTO("Project member added successfully"), HttpStatus.CREATED);
     }
 
@@ -66,7 +66,7 @@ public class ProjectMembershipController
         return new ResponseEntity<>(new ResponseDTO("Project member removed successfully"), HttpStatus.OK);
     }
 
-    public record AddProjectMemberRequest(Long userId, ProjectUserRole role)
+    public record AddProjectMemberRequest(String email, ProjectUserRole role)
     {
     }
 

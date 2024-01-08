@@ -36,8 +36,8 @@ public class ProjectsController {
             CreateEditProjectRequest dto,
             @AuthenticationPrincipal UserPrincipal principal)
     {
-        projectsService.createProject(dto, principal);
-        return new ResponseEntity<>(new ResponseDTO("Project created successfully"), HttpStatus.CREATED);
+        var projectId = projectsService.createProject(dto, principal);
+        return new ResponseEntity<>(new ResponseDTO("Project created successfully", projectId), HttpStatus.CREATED);
     }
 
     @GetMapping("/{projectId}")

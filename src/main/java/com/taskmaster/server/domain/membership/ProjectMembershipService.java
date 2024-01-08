@@ -31,14 +31,14 @@ public class ProjectMembershipService
         return projectMembershipRepository.findProjectMembers(projectId);
     }
 
-    public void addProjectMember(final long projectId, final long userId, final ProjectUserRole role)
+    public void addProjectMember(final long projectId, final String userEmail, final ProjectUserRole role)
     {
-        final var user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        final var user = userRepository.findByUsernameOrEmail(userEmail, userEmail).orElseThrow(() -> new RuntimeException("User not found"));
         final var project = projectsRepository.findById(projectId)
                                               .orElseThrow(() -> new RuntimeException("Project not found"));
         var key = ProjectMembershipCompositeKey.builder()
                                                .projectId(projectId)
-                                               .userId(userId)
+                                               .userId(user.getId())
                                                .role(role)
                                                .build();
         var projectMembership = ProjectMembershipModel.builder()
@@ -54,7 +54,8 @@ public class ProjectMembershipService
     {
         //delete and create the role for the user
         projectMembershipRepository.deleteByProjectIdAndUserId(projectId, userId);
-        addProjectMember(projectId, userId, role);
+        final var user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        addProjectMember(projectId, user.getEmail(), role);
     }
 
     @Transactional

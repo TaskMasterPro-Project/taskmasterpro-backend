@@ -1,6 +1,7 @@
 package com.taskmaster.server.auth;
 
 import com.taskmaster.server.auth.dto.SigninDTO;
+import com.taskmaster.server.auth.dto.SigninResponse;
 import com.taskmaster.server.auth.dto.SignupDTO;
 import com.taskmaster.server.auth.dto.JwtResponseDTO;
 import com.taskmaster.server.dto.ResponseDTO;
@@ -28,7 +29,7 @@ public class AuthControllerV1 {
     @PostMapping("/auth/sign-in")
     public ResponseEntity<ResponseDTO> signIn(@Valid @RequestBody SigninDTO signinDto) {
 
-        String token = authService.signInUser(signinDto);
+        var signInResponse = authService.signInUser(signinDto);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -36,10 +37,7 @@ public class AuthControllerV1 {
                         ResponseDTO
                                 .builder()
                                 .message("Logged in successfully!")
-                                .content(JwtResponseDTO
-                                        .builder()
-                                        .accessToken(token)
-                                        .tokenType("Bearer").build())
+                                .content(signInResponse)
                                 .build()
                 );
     }

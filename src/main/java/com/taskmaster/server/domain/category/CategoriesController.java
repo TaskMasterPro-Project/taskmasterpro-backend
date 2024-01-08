@@ -33,8 +33,8 @@ public class CategoriesController
             @PathVariable(value = "projectId") Long projectId,
             @RequestBody CreateUpdateCategoryRequest request)
     {
-        categoriesService.addCategoryToProject(projectId, request.name());
-        return new ResponseEntity<>(new ResponseDTO("Category created successfully!!"), null, 201);
+        var categoryId = categoriesService.addCategoryToProject(projectId, request.name());
+        return new ResponseEntity<>(new ResponseDTO("Category created successfully!!", categoryId), null, 201);
     }
 
     @DeleteMapping("/projects/{projectId}/categories/{categoryId}")
