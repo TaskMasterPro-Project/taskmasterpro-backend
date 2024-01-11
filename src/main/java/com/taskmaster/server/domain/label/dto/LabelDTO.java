@@ -1,4 +1,4 @@
-package com.taskmaster.server.domain.project.dto;
+package com.taskmaster.server.domain.label.dto;
 
 import lombok.*;
 
@@ -7,8 +7,9 @@ import lombok.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProjectDTO {
+public class LabelDTO {
     private long id;
+    private long projectId;
+    private long taskId;
     private String name;
-    private String description;
 }

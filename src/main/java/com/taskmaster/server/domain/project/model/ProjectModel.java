@@ -3,6 +3,7 @@ package com.taskmaster.server.domain.project.model;
 import javax.persistence.*;
 
 import com.taskmaster.server.domain.category.model.CategoryModel;
+import com.taskmaster.server.domain.label.model.LabelModel;
 import com.taskmaster.server.model.BaseEntity;
 import lombok.*;
 
@@ -28,4 +29,6 @@ public class ProjectModel extends BaseEntity
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LabelModel> labels;
 }

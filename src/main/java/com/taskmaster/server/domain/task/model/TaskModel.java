@@ -5,6 +5,7 @@ import javax.persistence.*;
 import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.domain.category.model.CategoryModel;
 import com.taskmaster.server.domain.comment.model.CommentModel;
+import com.taskmaster.server.domain.label.model.LabelModel;
 import com.taskmaster.server.domain.project.model.ProjectModel;
 import com.taskmaster.server.model.BaseEntity;
 import lombok.*;
@@ -45,9 +46,10 @@ public class TaskModel extends BaseEntity{
     @JoinColumn(name="category_id")
     private CategoryModel category;
 
-
     @JoinColumn(name="task_owner_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private UserModel taskOwner;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LabelModel> labels;
 }
