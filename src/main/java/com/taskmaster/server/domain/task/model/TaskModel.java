@@ -39,6 +39,9 @@ public class TaskModel extends BaseEntity{
     @ManyToMany(fetch = FetchType.EAGER)
     private List<UserModel> assignees;
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<LabelModel> labels;
+
     @Column(name="due_date")
     private LocalDate dueDate;
 
@@ -49,7 +52,4 @@ public class TaskModel extends BaseEntity{
     @JoinColumn(name="task_owner_id")
     @ManyToOne(fetch = FetchType.EAGER)
     private UserModel taskOwner;
-
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<LabelModel> labels;
 }

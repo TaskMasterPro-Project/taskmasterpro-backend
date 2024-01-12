@@ -18,20 +18,17 @@ public class LabelsService
 {
     private final LabelsRepository labelsRepository;
     private final ProjectsRepository projectsRepository;
-    private final TasksRepository tasksRepository;
 
     public LabelsService(
             LabelsRepository labelsRepository,
-            ProjectsRepository projectsRepository,
-            TasksRepository taskRepository)
+            ProjectsRepository projectsRepository)
     {
         this.labelsRepository = labelsRepository;
         this.projectsRepository = projectsRepository;
-        this.tasksRepository = taskRepository;
     }
 
     @Transactional
-    public void createLabel(CreateEditLabelRequest dto, long projectId, long taskId)
+    public void createLabel(CreateEditLabelRequest dto, long projectId)
     {
         if (dto.name() != null && labelsRepository.existsByNameAndProjectId(dto.name(), projectId))
         {
@@ -42,13 +39,9 @@ public class LabelsService
         var project = projectsRepository.findById(projectId)
                 .orElseThrow( () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Project not found"));
 
-        var task = tasksRepository.findById(taskId)
-                .orElseThrow( () -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Task not found"));
-
         var model = LabelModel.builder()
                 .name(dto.name())
                 .project(project)
-                .task(task)
                 .build();
 
         labelsRepository.save(model);
@@ -58,6 +51,7 @@ public class LabelsService
     public void deleteLabelById(long labelId)
     {
         labelsRepository.deleteById(labelId);
+
     }
 
     public List<LabelDTO> getLabelsForProject(Long projectId) {
@@ -67,20 +61,7 @@ public class LabelsService
                 .map(labelModel -> new LabelDTO(
                     labelModel.getId(),
                     labelModel.getProject().getId(),
-                    labelModel.getTask().getId(),
                     labelModel.getName())
-                ).toList();
-    }
-
-    public List<LabelDTO> getLabelsForTask(Long taskId) {
-        return labelsRepository
-                .findAllByTaskId(taskId)
-                .stream()
-                .map(labelModel -> new LabelDTO(
-                        labelModel.getId(),
-                        labelModel.getProject().getId(),
-                        labelModel.getTask().getId(),
-                        labelModel.getName())
                 ).toList();
     }
 }

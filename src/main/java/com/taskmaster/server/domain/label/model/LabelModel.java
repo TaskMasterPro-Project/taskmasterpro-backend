@@ -21,8 +21,4 @@ public class LabelModel extends BaseEntity {
     @ManyToOne
     @JoinColumn(name="project_id")
     private ProjectModel project;
-
-    @ManyToOne
-    @JoinColumn(name="task_id")
-    private TaskModel task;
 }

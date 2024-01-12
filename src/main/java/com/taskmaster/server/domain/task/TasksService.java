@@ -4,7 +4,9 @@ import com.taskmaster.server.auth.UserRepository;
 import com.taskmaster.server.auth.model.UserModel;
 import com.taskmaster.server.auth.security.UserPrincipal;
 import com.taskmaster.server.domain.category.CategoriesRepository;
+import com.taskmaster.server.domain.label.LabelsRepository;
 import com.taskmaster.server.domain.project.ProjectsRepository;
+import com.taskmaster.server.domain.task.dto.AddLabelRequest;
 import com.taskmaster.server.domain.task.dto.CreateEditTaskRequest;
 import com.taskmaster.server.domain.task.dto.TaskDTO;
 import com.taskmaster.server.domain.task.model.TaskModel;
@@ -24,18 +26,21 @@ public class TasksService {
 
     private final TasksRepository tasksRepository;
     private final UserRepository userRepository;
-
     private final CategoriesRepository categoriesRepository;
-
     private final ProjectsRepository projectsRepository;
+    private final LabelsRepository labelsRepository;
 
     public TasksService(TasksRepository tasksRepository,
-                           UserRepository userRepository, CategoriesRepository categoriesRepository,ProjectsRepository projectsRepository)
+                       UserRepository userRepository,
+                        CategoriesRepository categoriesRepository,
+                        ProjectsRepository projectsRepository,
+                        LabelsRepository labelsRepository)
     {
         this.tasksRepository = tasksRepository;
         this.userRepository = userRepository;
-        this.categoriesRepository=categoriesRepository;
-        this.projectsRepository=projectsRepository;
+        this.categoriesRepository = categoriesRepository;
+        this.projectsRepository = projectsRepository;
+        this.labelsRepository = labelsRepository;
     }
 
     @Transactional
@@ -106,6 +111,27 @@ public class TasksService {
         }).toList();
     }
 
+    @Transactional
+    public void addLabel(AddLabelRequest dto, Long taskId)
+    {
+        var task = tasksRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Task not found"));
+        var label = labelsRepository.findById(dto.labelId()).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Label not found"));
 
+        if (label.getName() != null && task.getLabels().stream().anyMatch(x -> x.getName().equals(label.getName())))
+        {
+            throw new TaskAlreadyExistsException(HttpStatus.BAD_REQUEST,
+                    "Label with name '" + label.getName() + "' already exists");
+        }
 
+        task.getLabels().add(label);
+    }
+
+    @Transactional
+    public void removeLabel(Long taskId, Long labelId)
+    {
+        var task = tasksRepository.findById(taskId).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Task not found"));
+        var label = labelsRepository.findById(labelId).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND,"Label not found"));
+
+        task.getLabels().remove(label);
+    }
 }

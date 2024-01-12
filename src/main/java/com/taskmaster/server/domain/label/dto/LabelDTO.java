@@ -10,6 +10,5 @@ import lombok.*;
 public class LabelDTO {
     private long id;
     private long projectId;
-    private long taskId;
     private String name;
 }

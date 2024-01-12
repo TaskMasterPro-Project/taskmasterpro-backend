@@ -21,13 +21,26 @@ public class LabelsController
         this.labelsService = labelsService;
     }
 
-    @PostMapping("/labels/{projectId}/{taskId}")
+    @PostMapping("/projects/{projectId}/labels")
     public ResponseEntity<ResponseDTO> createLabel(
-            @RequestBody
-            CreateEditLabelRequest dto,
-            @PathVariable Long projectId,
-            @PathVariable Long taskId) {
-        labelsService.createLabel(dto, projectId, taskId);
+            @PathVariable long projectId,
+            @RequestBody CreateEditLabelRequest dto) {
+        labelsService.createLabel(dto, projectId);
         return new ResponseEntity<>(new ResponseDTO("Label created successfully"), HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/projects/{projectId}/labels/{labelId}")
+    public ResponseEntity<ResponseDTO> deleteLabel(
+            @PathVariable long projectId,
+            @PathVariable long labelId) {
+        labelsService.deleteLabelById(labelId);
+        return new ResponseEntity<>(new ResponseDTO("Label deleted successfully"), HttpStatus.OK);
+    }
+
+    @GetMapping("/projects/{projectId}/labels")
+    public ResponseEntity<ResponseDTO> getLabelsForProject(
+            @PathVariable long projectId) {
+        var labels = labelsService.getLabelsForProject(projectId);
+        return new ResponseEntity<>(new ResponseDTO("Labels fetched successfully", labels), HttpStatus.OK);
     }
 }

@@ -10,5 +10,4 @@ public interface LabelsRepository extends JpaRepository<LabelModel, Long>
 {
     boolean existsByNameAndProjectId(String name, long projectId);
     List<LabelModel> findAllByProjectId(Long projectId);
-    List<LabelModel> findAllByTaskId(Long taskId);
 }

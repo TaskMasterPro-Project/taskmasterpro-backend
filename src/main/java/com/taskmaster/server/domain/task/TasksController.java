@@ -1,6 +1,7 @@
 package com.taskmaster.server.domain.task;
 
 import com.taskmaster.server.auth.security.UserPrincipal;
+import com.taskmaster.server.domain.task.dto.AddLabelRequest;
 import com.taskmaster.server.domain.task.dto.CreateEditTaskRequest;
 import com.taskmaster.server.domain.task.dto.TaskDTO;
 import com.taskmaster.server.dto.ResponseDTO;
@@ -40,7 +41,6 @@ public class TasksController {
         return tasksService.getTasksForProject(projectId);
     }
 
-
     @PutMapping("/projects/{projectId}/tasks/{taskId}")
     @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
     public ResponseEntity<ResponseDTO> editTask(
@@ -58,5 +58,25 @@ public class TasksController {
     {
         tasksService.deleteTaskById(taskId);
         return new ResponseEntity<>(new ResponseDTO("Task deleted successfully!"), HttpStatus.OK);
+    }
+
+    @PostMapping("/projects/{projectId}/tasks/{taskId}/labels")
+    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
+    public ResponseEntity<ResponseDTO> addLabelToTask(
+            @RequestBody AddLabelRequest dto,
+            @PathVariable Long projectId,
+            @PathVariable Long taskId) {
+        tasksService.addLabel(dto, taskId);
+        return new ResponseEntity<>(new ResponseDTO("Label added successfully"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/projects/{projectId}/tasks/{taskId}/labels/{labelId}")
+    @PreAuthorize("@securityUtility.isTaskOwner(#taskId, principal) and @securityUtility.isProjectOwner(#projectId, principal)")
+    public ResponseEntity<ResponseDTO> addLabelToTask(
+            @PathVariable Long projectId,
+            @PathVariable Long taskId,
+            @PathVariable Long labelId) {
+        tasksService.removeLabel(taskId, labelId);
+        return new ResponseEntity<>(new ResponseDTO("Label removed successfully"), HttpStatus.OK);
     }
 }
